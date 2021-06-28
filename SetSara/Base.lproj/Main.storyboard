@@ -67,7 +67,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XC7-Yy-R6A" customClass="CardView" customModule="SetSara" customModuleProvider="target">
-                                <rect key="frame" x="78" y="130" width="240" height="128"/>
+                                <rect key="frame" x="78" y="130" width="193" height="249"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
