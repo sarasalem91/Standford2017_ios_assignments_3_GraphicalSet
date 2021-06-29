@@ -20,7 +20,7 @@ struct SetCardDeck {
     
     private(set) var cards =  [SetCard]()
     private(set) var playing_cards =  [SetCard]()
-    private(set) var number_of_playing_card_on_deck = 24
+    private(set) var number_of_playing_card_on_deck = 81
     private(set) var first_playing_card_on_deck = 12
     
     private(set) var selecting_cards =  [SetCard]()

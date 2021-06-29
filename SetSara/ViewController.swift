@@ -10,8 +10,8 @@ import UIKit
 class ViewController: UIViewController {
     
     var deck = SetCardDeck()
-    private var selectedButton = [UIButton]()
-    private var hintedButton = [UIButton]()
+    private var selectedButton = [CardView]()
+    private var hintedButton = [CardView]()
     
     var new_game_btn_clck = false{
         didSet{
@@ -38,17 +38,27 @@ class ViewController: UIViewController {
         }
     }
    
-    @IBOutlet var buttonsArr: [UIButton]!
+    @IBOutlet weak var grid_view: GridView!
+    var buttonsArr: [CardView] = []
     @IBOutlet weak var deal_btn: UIButton!
     @IBOutlet weak var new_game_btn: UIButton!
+    
+    lazy var grid = Grid(layout: .aspectRatio(2/3), frame: grid_view.bounds)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateViewFromModel()
         
+        
+        
+        updateViewFromModel()
+        reAllocateCards()
     }
     
+    func reAllocateCards(){
+        
+        
+    }
     
     @IBAction func press_hint(_ sender: UIButton) {
         deck.hint()
@@ -64,67 +74,68 @@ class ViewController: UIViewController {
     }
     
     @IBAction func New_Game(_ sender: UIButton) {
+        buttonsArr.forEach {
+            $0.removeFromSuperview()
+        }
+        buttonsArr.removeAll()
         score = 0
         deal_btn.isEnabled = true
         new_game_btn_clck = true
         deck = SetCardDeck()
-        resetButton()
+        
 
         selectedButton.removeAll()
         hintedButton.removeAll()
         updateViewFromModel()
     }
     private func resetButton() {
-        for button in buttonsArr {
-            let nsAttributedString = NSAttributedString(string: "")
-            button.setAttributedTitle(nsAttributedString, for: .normal)
-            button.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+        buttonsArr.forEach {
+            $0.removeFromSuperview()
         }
+        buttonsArr.removeAll()
     }
     // sara
     func updateViewFromModel(){
-//        for index in deck.playing_cards.indices{
-//            buttonsArr[index].titleLabel?.numberOfLines = 0
-//            buttonsArr[index].setAttributedTitle(setCardTitle(with: deck.playing_cards[index]), for: .normal)
-//
-//        }
         
+        grid.cellCount = deck.playing_cards.count
         for index in deck.playing_cards.indices{
-            
-        }
-    }
-    func setCardTitle(with card : SetCard)->NSAttributedString{
-        let attributes: [NSAttributedString.Key: Any] = [
-            .strokeColor: ModelToViewDataSource.colors[card.color]!,
-            .strokeWidth: ModelToViewDataSource.strokeWidth[card.shading],
-            .foregroundColor: ModelToViewDataSource.colors[card.color]!.withAlphaComponent(ModelToViewDataSource.alpha[card.shading]!),
-            ]
-        var cardTitle = ModelToViewDataSource.shapes[card.shape]!
-        switch card.number {
-        case .two: cardTitle = "\(cardTitle) \(cardTitle)"
-        case .three: cardTitle = "\(cardTitle) \(cardTitle) \(cardTitle)"
-        default:
-            break
+            var card = deck.playing_cards[index]
+            var cardview = CardView()
+            print(grid.cellSize , "   ",grid[index]!)
+            cardview.frame = grid[index]!
+            //cardview.frame.size = grid.cellSize
+            cardview.shape = card.shape.rawValue
+            cardview.number = CGFloat(card.number.rawValue)
+            cardview.shading = card.shading.rawValue
+            cardview.color =  ModelToViewDataSource.colors[card.color]!
+            cardview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chooseCard)))
+            buttonsArr += [cardview]
+            grid_view.addSubview(cardview)
         }
         
-        return NSAttributedString(string: cardTitle, attributes: attributes)
+        
     }
 
-    
-    @IBAction func chooseCard(_ sender: UIButton) {
-        if let index = buttonsArr.index(of:sender){
-            deck.select_cards(index:index )
-            chooseButton(at: sender)
-            updateViewFromModel()
-            
-            var deck_score = deck.game_score?.rawValue ?? 0
-            score += deck_score
-            
+    @objc func chooseCard(sender: UITapGestureRecognizer) {
+        if let card = sender as? CardView{
+            if let index = buttonsArr.index(of:card){
+                deck.select_cards(index:index )
+                chooseButton(at: index)
+                updateViewFromModel()
+                
+                var deck_score = deck.game_score?.rawValue ?? 0
+                score += deck_score
+                
+            }
         }
+        
     }
     
     @IBAction func deal_3_more_cards(_ sender: UIButton) {
-        
+        buttonsArr.forEach {
+            $0.removeFromSuperview()
+        }
+        buttonsArr.removeAll()
         deal_3_more_cards_on_ui()
     }
     
@@ -134,9 +145,11 @@ class ViewController: UIViewController {
         deal_3_more_cards = true
     }
 
-    func chooseButton(at card: UIButton){
+    func chooseButton(at index: Int){
+        var card = buttonsArr[index]
         
         if selectedButton.count < 2{
+            
             if selectedButton.contains(card) {
                 card.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
                 card.layer.borderWidth = 3.0
@@ -165,9 +178,9 @@ class ViewController: UIViewController {
 }
 
 struct ModelToViewDataSource {
-    
-    static let shapes: [SetCard.Shape: String] = [.oval: "●", .diamond: "▲", .squiggle: "■"]
-    static var colors: [SetCard.Color: UIColor] = [.red: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), .purple: #colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1), .green: #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)]
-    static var alpha: [SetCard.Shading: CGFloat] = [.solid: 1.0, .unfilled: 0.40, .striped: 0.15]
-    static var strokeWidth: [SetCard.Shading: CGFloat] = [.solid: -5, .unfilled: 5, .striped: -5]
+    static var colors: [SetCard.Color: UIColor] = [.red: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), .purple: #colorLiteral(red: 0.5791940689, green: 0.1280144453, blue: 0.5726861358, alpha: 1), .green: #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)]
+   // static let shapes: [SetCard.Shape: String] = [.oval: "●", .diamond: "▲", .squiggle: "■"]
+  //  static var colors: [SetCard.Color: UIColor] = [.red: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), .purple: #colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1), .green: #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)]
+//    static var alpha: [SetCard.Shading: CGFloat] = [.solid: 1.0, .unfilled: 0.40, .striped: 0.15]
+//    static var strokeWidth: [SetCard.Shading: CGFloat] = [.solid: -5, .unfilled: 5, .striped: -5]
 }

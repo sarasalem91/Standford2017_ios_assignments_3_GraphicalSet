@@ -66,10 +66,9 @@
                                     <action selector="press_hint:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Pgx-My-oAb"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XC7-Yy-R6A" customClass="CardView" customModule="SetSara" customModuleProvider="target">
-                                <rect key="frame" x="78" y="130" width="274" height="249"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XC7-Yy-R6A" customClass="GridView" customModule="SetSara" customModuleProvider="target">
+                                <rect key="frame" x="8" y="60" width="398" height="698"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -79,11 +78,16 @@
                             <constraint firstItem="VGv-ey-aOY" firstAttribute="top" secondItem="jlP-kq-aym" secondAttribute="bottom" constant="30" id="BBl-l5-h74"/>
                             <constraint firstItem="jlP-kq-aym" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Kz6-Oc-h0A"/>
                             <constraint firstItem="VGv-ey-aOY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Rbv-9H-UrH"/>
+                            <constraint firstItem="jlP-kq-aym" firstAttribute="top" secondItem="XC7-Yy-R6A" secondAttribute="bottom" constant="16" id="avC-kw-fQE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XC7-Yy-R6A" secondAttribute="trailing" constant="8" id="fJb-3S-Ig9"/>
+                            <constraint firstItem="XC7-Yy-R6A" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="16" id="jrh-gs-aXO"/>
+                            <constraint firstItem="XC7-Yy-R6A" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="rSN-Eh-XE8"/>
                             <constraint firstAttribute="bottom" secondItem="VGv-ey-aOY" secondAttribute="bottom" constant="32" id="rky-Bd-DPp"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="deal_btn" destination="MAc-kX-ddm" id="e8d-L1-06N"/>
+                        <outlet property="grid_view" destination="XC7-Yy-R6A" id="CbY-RJ-fd4"/>
                         <outlet property="new_game_btn" destination="2oO-a9-52L" id="M1d-2a-UYb"/>
                         <outlet property="score_lbl" destination="HJZ-sr-orQ" id="x7h-Vy-hsa"/>
                     </connections>
@@ -94,9 +98,6 @@
         </scene>
     </scenes>
     <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemGray4Color">
             <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
