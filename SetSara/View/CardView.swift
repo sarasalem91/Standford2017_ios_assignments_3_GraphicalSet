@@ -13,7 +13,7 @@ class CardView: UIView {
     @IBInspectable
     var shape : String = "oval" {didSet{setNeedsDisplay()}}
     @IBInspectable
-    var number : CGFloat = 1 {didSet{setNeedsDisplay()}}
+    var number : CGFloat = 3 {didSet{setNeedsDisplay()}}
     @IBInspectable
     var color : UIColor = UIColor.red {didSet{setNeedsDisplay()}}
     @IBInspectable
@@ -64,17 +64,217 @@ class CardView: UIView {
     }
     func draw_oval(){
         let path = UIBezierPath()
+        
         if number == 1{
-            path.move(to: CGPoint(x: 24, y: bounds.midY - 100))
-            path.addLine(to: CGPoint(x: (bounds.width-24), y: bounds.midY - 100))
-            path.addArc(withCenter: CGPoint(x: bounds.midX + 100, y: bounds.midY), radius: 8, startAngle: 0, endAngle: CGFloat.pi, clockwise: false)
+            var oval_radius = bounds.width/4
+            var oval_mid_y = bounds.midY
             
-            path.addLine(to:  CGPoint(x: 24, y: bounds.midY + 100))
-            path.addArc(withCenter: CGPoint(x: bounds.midX - 100, y: bounds.midY), radius: 8, startAngle: 0, endAngle: CGFloat.pi, clockwise: false)
+            path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+            path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+            path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+            
+            path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+            path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
            
             path.lineWidth = 3
+        
+            if shading ==  "solid"{
+                color.setFill()
+                path.fill()
+            }else if shading ==  "striped"{
+                
+                var const_distance:CGFloat = 10
+                var distanceBetween_stripped_lines:CGFloat = const_distance
+                var looping_distance:CGFloat = bounds.width - 2*constraint_distance
+                
+                for x in 0...Int(looping_distance/distanceBetween_stripped_lines){
+                    
+                    path.move(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: 0))
+                    path.addLine(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: bounds.maxY ))
+                    
+                    distanceBetween_stripped_lines += const_distance
+                }
+                
+                
+                path.addClip()
+                color.setStroke()
+                path.stroke()
+                
+                
+            }else{ //unfilled
+                color.setStroke()
+                path.stroke()
+            }
             
+        }else if number == 2{
             
+            var first_drawing_height = bounds.height / number
+            
+            // first
+            var oval_radius = bounds.width/8
+            var oval_mid_y = bounds.height / 4
+            
+            path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+            path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+            path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+            
+            path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+            path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+            
+            // second
+            oval_mid_y =  first_drawing_height + bounds.height / 4
+            
+            path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+            path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+            path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+            
+            path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+            path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+           
+            path.lineWidth = 3
+        
+            if shading ==  "solid"{
+                color.setFill()
+                path.fill()
+            }else if shading ==  "striped"{
+                
+                var const_distance:CGFloat = 10
+                var distanceBetween_stripped_lines:CGFloat = const_distance
+                var looping_distance:CGFloat = bounds.width - 2*constraint_distance
+                
+                for x in 0...Int(looping_distance/distanceBetween_stripped_lines){
+                    
+                    path.move(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: 0))
+                    path.addLine(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: bounds.maxY ))
+                    
+                    distanceBetween_stripped_lines += const_distance
+                }
+                
+                
+                path.addClip()
+                color.setStroke()
+                path.stroke()
+                
+                
+            }else{ //unfilled
+                color.setStroke()
+                path.stroke()
+            }
+            else if number == 2{
+                
+                var first_drawing_height = bounds.height / number
+                
+                // first
+                var oval_radius = bounds.width/8
+                var oval_mid_y = bounds.height / 4
+                
+                path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+                path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+                path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+                
+                path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+                path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+                
+                // second
+                oval_mid_y =  first_drawing_height + bounds.height / 4
+                
+                path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+                path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+                path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+                
+                path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+                path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+               
+                path.lineWidth = 3
+            
+                if shading ==  "solid"{
+                    color.setFill()
+                    path.fill()
+                }else if shading ==  "striped"{
+                    
+                    var const_distance:CGFloat = 10
+                    var distanceBetween_stripped_lines:CGFloat = const_distance
+                    var looping_distance:CGFloat = bounds.width - 2*constraint_distance
+                    
+                    for x in 0...Int(looping_distance/distanceBetween_stripped_lines){
+                        
+                        path.move(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: 0))
+                        path.addLine(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: bounds.maxY ))
+                        
+                        distanceBetween_stripped_lines += const_distance
+                    }
+                    
+                    
+                    path.addClip()
+                    color.setStroke()
+                    path.stroke()
+                    
+                    
+                }else{ //unfilled
+                    color.setStroke()
+                    path.stroke()
+                }
+                
+            }else if number == 2{
+                
+                var first_drawing_height = bounds.height / number
+                
+                // first
+                var oval_radius = bounds.width/8
+                var oval_mid_y = bounds.height / 4
+                
+                path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+                path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+                path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+                
+                path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+                path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+                
+                // second
+                oval_mid_y =  first_drawing_height + bounds.height / 4
+                
+                path.move(to: CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y - oval_radius))
+                path.addLine(to: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y - oval_radius))
+                path.addArc(withCenter: CGPoint(x: (bounds.width-oval_radius-constraint_distance), y: oval_mid_y), radius: oval_radius, startAngle:-CGFloat.pi/2, endAngle: -(3/2)*CGFloat.pi, clockwise: true)
+                
+                path.addLine(to:  CGPoint(x: (oval_radius+constraint_distance), y: oval_mid_y + oval_radius))
+                path.addArc(withCenter:CGPoint(x: oval_radius+constraint_distance, y: oval_mid_y), radius: oval_radius, startAngle: -(3/2)*CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: true)
+               
+                path.lineWidth = 3
+            
+                if shading ==  "solid"{
+                    color.setFill()
+                    path.fill()
+                }else if shading ==  "striped"{
+                    
+                    var const_distance:CGFloat = 10
+                    var distanceBetween_stripped_lines:CGFloat = const_distance
+                    var looping_distance:CGFloat = bounds.width - 2*constraint_distance
+                    
+                    for x in 0...Int(looping_distance/distanceBetween_stripped_lines){
+                        
+                        path.move(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: 0))
+                        path.addLine(to: CGPoint(x: (constraint_distance + distanceBetween_stripped_lines), y: bounds.maxY ))
+                        
+                        distanceBetween_stripped_lines += const_distance
+                    }
+                    
+                    
+                    path.addClip()
+                    color.setStroke()
+                    path.stroke()
+                    
+                    
+                }else{ //unfilled
+                    color.setStroke()
+                    path.stroke()
+                }
+                
+            }
+            
+           
+            path.lineWidth = 3
+        
             if shading ==  "solid"{
                 color.setFill()
                 path.fill()
