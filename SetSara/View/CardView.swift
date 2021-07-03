@@ -7,9 +7,20 @@
 
 import UIKit
 
+struct State {
+    
+    enum stateOfSeclection {
+        case selected
+        case unselected
+        case hinted
+    }
+    
+}
+
 
 @IBDesignable
 class CardView: UIView {
+    
     @IBInspectable
     var shape : String = "squiggle" {didSet{setNeedsDisplay()}}
     @IBInspectable
@@ -21,6 +32,7 @@ class CardView: UIView {
     
     var constraint_distance : CGFloat = 16
     
+
     //redraw when bounds change
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         setNeedsDisplay()
@@ -29,12 +41,12 @@ class CardView: UIView {
     
     override func draw(_ rect: CGRect) {
         // Drawing code
-        
+        self.backgroundColor = .white
         self.layer.cornerRadius = 10
-        self.layer.borderWidth = 1
-        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.layer.borderWidth = 3
+        self.layer.borderColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         self.clipsToBounds = true
-        
+
         switch shape {
         case "squiggle":
             draw_squiggle()
@@ -51,6 +63,7 @@ class CardView: UIView {
             break
             
         default: break
+            
         }
         
         

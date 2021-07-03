@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     var deck = SetCardDeck()
     private var selectedButton = [CardView]()
     private var hintedButton = [CardView]()
-    
+    var is_first_time = true
     var new_game_btn_clck = false{
         didSet{
             if (deck.cards.count == 0){
@@ -43,21 +43,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var deal_btn: UIButton!
     @IBOutlet weak var new_game_btn: UIButton!
     
-    lazy var grid = Grid(layout: .aspectRatio(2/3), frame: grid_view.bounds)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
-        
         updateViewFromModel()
-        reAllocateCards()
-    }
-    
-    func reAllocateCards(){
-        
-        
+       
     }
     
     @IBAction func press_hint(_ sender: UIButton) {
@@ -96,32 +88,63 @@ class ViewController: UIViewController {
     }
     // sara
     func updateViewFromModel(){
-        
+        resetButton()
+        var grid = Grid(layout: .aspectRatio(2/3), frame: grid_view.bounds)
         grid.cellCount = deck.playing_cards.count
+        
         for index in deck.playing_cards.indices{
+
             var card = deck.playing_cards[index]
             var cardview = CardView()
-            print(grid.cellSize , "   ",grid[index]!)
             cardview.frame = grid[index]!
-            //cardview.frame.size = grid.cellSize
+            cardview.backgroundColor = .white
             cardview.shape = card.shape.rawValue
             cardview.number = CGFloat(card.number.rawValue)
             cardview.shading = card.shading.rawValue
             cardview.color =  ModelToViewDataSource.colors[card.color]!
-            cardview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chooseCard)))
+            
             buttonsArr += [cardview]
             grid_view.addSubview(cardview)
+
+            cardview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chooseCard(_:))))
+            
+           
         }
         
-        
     }
-
-    @objc func chooseCard(sender: UITapGestureRecognizer) {
-        if let card = sender as? CardView{
+    @IBAction func rotation_gesture(_ sender: UIRotationGestureRecognizer) {
+        deck.shuffle()
+        updateViewFromModel()
+    }
+    
+    @IBAction func swip_more_3_cards(_ sender: UISwipeGestureRecognizer) {
+        switch sender.state {
+        case .ended:
+            
+            deal_3_more_cards_btn_press()
+            break
+        default:
+            break
+        }
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        print("** traitCollectionDidChange traitCollectionDidChange traitCollectionDidChange **")
+        updateViewFromModel() // redraw for all set
+    }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print("viewDidLayoutSubviews viewDidLayoutSubviews viewDidLayoutSubviews")
+        if is_first_time{
+            updateViewFromModel() // redraw for all set
+            is_first_time = false
+        }
+    }
+    @objc func chooseCard(_ sender: UITapGestureRecognizer) {
+        if let card = sender.view as? CardView{
             if let index = buttonsArr.index(of:card){
                 deck.select_cards(index:index )
-                chooseButton(at: index)
-                updateViewFromModel()
+                chooseButton(at: card)
+               
                 
                 var deck_score = deck.game_score?.rawValue ?? 0
                 score += deck_score
@@ -132,42 +155,60 @@ class ViewController: UIViewController {
     }
     
     @IBAction func deal_3_more_cards(_ sender: UIButton) {
+        deal_3_more_cards_btn_press()
+    }
+    func deal_3_more_cards_btn_press(){
         buttonsArr.forEach {
             $0.removeFromSuperview()
         }
         buttonsArr.removeAll()
         deal_3_more_cards_on_ui()
     }
-    
     func deal_3_more_cards_on_ui(){
         deck.deal_more_3_cards()
         updateViewFromModel()
         deal_3_more_cards = true
     }
 
-    func chooseButton(at index: Int){
-        var card = buttonsArr[index]
-        
-        if selectedButton.count < 2{
-            
-            if selectedButton.contains(card) {
-                card.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+    func chooseButton(at card: CardView){
+
+        DispatchQueue.main.async {
+
+            if self.selectedButton.count < 2{
+
+                if let _index =  self.selectedButton.index(of:  card) {
+                    card.layer.borderColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+                    card.layer.borderWidth = 3
+                    self.selectedButton.remove(at: _index)
+                    return
+                }
+
+                card.layer.borderColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
                 card.layer.borderWidth = 3.0
-                selectedButton.remove(at: selectedButton.index(of: card)!)
-                return
+
+                self.selectedButton += [card]
+                print(3)
+
+            }else{
+
+                card.layer.borderColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+                card.layer.borderWidth = 3.0
+
+                self.selectedButton += [ card]
+
+                self.selectedButton.forEach {
+                    $0.removeFromSuperview()
+                }
+                self.selectedButton.removeAll()
+                self.updateScore()
+                self.updateViewFromModel()
             }
-            selectedButton += [card]
-            card.layer.borderColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-            card.layer.borderWidth = 3.0
-        }else{
-            selectedButton += [card]
-            card.layer.borderColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
-            card.layer.borderWidth = 3.0
-            
-            buttonsArr.forEach() { $0.layer.borderColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0) }
-            selectedButton.removeAll()
-            updateScore()
+
+            print("selected btn count ",self.selectedButton.count)
         }
+
+        
+        
     }
       
     private func updateScore() {

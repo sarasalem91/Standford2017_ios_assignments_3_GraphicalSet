@@ -54,6 +54,10 @@ struct SetCardDeck {
             }
         }
     }
+    
+    mutating func shuffle(){
+        playing_cards.shuffle()
+    }
  
     mutating func select_cards(index:Int){
         
