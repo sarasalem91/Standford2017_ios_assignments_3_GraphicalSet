@@ -127,10 +127,7 @@ class ViewController: UIViewController {
             break
         }
     }
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        print("** traitCollectionDidChange traitCollectionDidChange traitCollectionDidChange **")
-        updateViewFromModel() // redraw for all set
-    }
+  
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         print("viewDidLayoutSubviews viewDidLayoutSubviews viewDidLayoutSubviews")
@@ -138,6 +135,17 @@ class ViewController: UIViewController {
             updateViewFromModel() // redraw for all set
             is_first_time = false
         }
+    }
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        if UIDevice.current.orientation.isLandscape {
+            print("Landscape")
+        } else {
+            print("Portrait")
+        }
+        
+        is_first_time = true
     }
     @objc func chooseCard(_ sender: UITapGestureRecognizer) {
         if let card = sender.view as? CardView{
